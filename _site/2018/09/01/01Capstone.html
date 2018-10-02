@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Assistive Wheelchair Technologies for ALS Patients | Justin Hubbard</title>
+<meta name="generator" content="Jekyll v3.8.3" />
+<meta property="og:title" content="Assistive Wheelchair Technologies for ALS Patients" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="For my Senior Design Project at Washington State University, I and four others took on the continuation of the Autonomous Wheelchair project, supported by Microsoft and Team Gleason." />
+<meta property="og:description" content="For my Senior Design Project at Washington State University, I and four others took on the continuation of the Autonomous Wheelchair project, supported by Microsoft and Team Gleason." />
+<link rel="canonical" href="http://localhost:4000/2018/09/01/01Capstone.html" />
+<meta property="og:url" content="http://localhost:4000/2018/09/01/01Capstone.html" />
+<meta property="og:site_name" content="Justin Hubbard" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-09-01T14:29:18-07:00" />
+<script type="application/ld+json">
+{"headline":"Assistive Wheelchair Technologies for ALS Patients","dateModified":"2018-09-01T14:29:18-07:00","datePublished":"2018-09-01T14:29:18-07:00","url":"http://localhost:4000/2018/09/01/01Capstone.html","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2018/09/01/01Capstone.html"},"description":"For my Senior Design Project at Washington State University, I and four others took on the continuation of the Autonomous Wheelchair project, supported by Microsoft and Team Gleason.","@type":"BlogPosting","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Justin Hubbard" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Justin Hubbard</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <div class="middle">
+    <header class="post-header">
+      <h1 class="post-title p-name" color="#BAE1D3" itemprop="name headline">Assistive Wheelchair Technologies for ALS Patients</h1>
+      <!--<p class="post-meta">
+        <time class="dt-published" datetime="2018-09-01T14:29:18-07:00" itemprop="datePublished">Sep 1, 2018
+        </time></p>-->
+    </header>
+
+    <div class="post-content e-content" itemprop="articleBody">
+      <h4 id="for-my-senior-design-project-at-washington-state-university-i-and-four-others-took-on-the-continuation-of-the-autonomous-wheelchair-project-supported-by-microsoft-and-team-gleason">For my Senior Design Project at Washington State University, I and four others took on the continuation of the Autonomous Wheelchair project, supported by Microsoft and Team Gleason.</h4>
+
+<p><img src="/assets/images/Eris-Poster.png" alt="Poster for the End of Year Poster Session" /></p>
+
+<p>The main goal of this then three-year project was to take a standard assistive wheelchair and explore ways
+that adding technology to it could improve the lives of people living with ALS. People with ALS can have a wide range of mobility levels ranging from mild impairment that allows for use of keyboards and joysticks to total impairment leaving only eye movement, so we had to be creative
+with our ideas.</p>
+
+<p><strong>With the help of our faculty mentors, we landed on three ideas to implement:</strong></p>
+<ul>
+  <li>keyboard typing interfaces using Tobii eye-tracking</li>
+  <li>Kinect and sonar-based object sensing</li>
+  <li>Programmatic motor calibration.</li>
+</ul>
+
+<p>These requirements were reached over the course of two semesters of trial and error, constantly reassessing
+how realistic or feasible our ideas were. Out of my interest in computer vision and sensors generally, I was
+able to work on the Kinect/Sonar components along with one other teammate.</p>
+
+<p>Previous years had hooked the chair up to
+an Arduino for controling the motors and added an Intel NUC with a screen for more power intensive software. They did some work
+with navigation using sensors mounted on the walls, and also made some progress with door detection using a Kinect, but
+we decided to move on to more general solutions.</p>
+
+<p>When we initially tested the object detection implementation from the previous year, it was giving us false
+positives almost exclusively. Not great. So we changed approaches and focused on depth sensing. Luckily, the
+Kinect provides DepthFrames, so I was able to combine those with the actual sonar sensors on the chair to
+create an array of depth sensors.</p>
+
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="n">BaseFrame</span> <span class="n">frame</span> <span class="p">=</span> <span class="n">Data</span><span class="p">.</span><span class="n">BackgroundStream</span><span class="p">.</span><span class="nf">GetFrame</span><span class="p">();</span>
+<span class="n">DFrame</span> <span class="n">df</span> <span class="p">=</span> <span class="p">(</span><span class="n">DFrame</span><span class="p">)</span><span class="n">Data</span><span class="p">.</span><span class="n">BackgroundStream</span><span class="p">.</span><span class="nf">GetFrame</span><span class="p">();</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="k">null</span> <span class="p">!=</span> <span class="n">df</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">dfHeight</span> <span class="p">=</span> <span class="n">df</span><span class="p">.</span><span class="nf">GetHeight</span><span class="p">();</span>
+    <span class="kt">int</span> <span class="n">dfWidth</span> <span class="p">=</span> <span class="n">df</span><span class="p">.</span><span class="nf">GetWidth</span><span class="p">();</span>
+
+    <span class="kt">ushort</span><span class="p">[]</span> <span class="n">dd</span> <span class="p">=</span> <span class="n">df</span><span class="p">.</span><span class="nf">get_DepthData</span><span class="p">();</span>
+
+    <span class="kt">int</span><span class="p">[]</span> <span class="n">kDepths</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">[</span><span class="m">10</span><span class="p">];</span>
+    <span class="kt">int</span><span class="p">[][]</span> <span class="n">testD</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">[</span><span class="m">10</span><span class="p">][];</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">z</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">z</span> <span class="p">&lt;</span> <span class="m">10</span><span class="p">;</span> <span class="n">z</span><span class="p">++)</span>
+    <span class="p">{</span>
+        <span class="n">testD</span><span class="p">[</span><span class="n">z</span><span class="p">]</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">[</span><span class="n">dfHeight</span><span class="p">];</span>
+    <span class="p">}</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">dfHeight</span><span class="p">;</span> <span class="n">i</span><span class="p">++)</span> <span class="c1">// Loop over each column of the array</span>
+    <span class="p">{</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="p">=</span> <span class="m">1</span><span class="p">;</span> <span class="n">j</span> <span class="p">&lt;</span> <span class="m">11</span><span class="p">;</span> <span class="n">j</span><span class="p">++)</span>
+        <span class="p">{</span>
+            <span class="kt">int</span> <span class="n">pixelVal</span> <span class="p">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">dd</span><span class="p">[(</span><span class="n">dfWidth</span> <span class="p">*</span> <span class="n">i</span><span class="p">)</span> <span class="p">+</span> <span class="p">(</span><span class="n">j</span> <span class="p">*</span> <span class="p">(</span><span class="n">dfWidth</span> <span class="p">/</span> <span class="m">11</span><span class="p">))];</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="n">pixelVal</span> <span class="p">==</span> <span class="m">0</span><span class="p">)</span>
+                <span class="n">testD</span><span class="p">[</span><span class="n">j</span><span class="p">-</span><span class="m">1</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="p">=</span> <span class="m">10000</span><span class="p">;</span>
+            <span class="k">else</span>
+                <span class="n">testD</span><span class="p">[</span><span class="n">j</span><span class="p">-</span><span class="m">1</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="p">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">dd</span><span class="p">[(</span><span class="n">dfWidth</span> <span class="p">*</span> <span class="n">i</span><span class="p">)</span> <span class="p">+</span> <span class="p">(</span><span class="n">j</span> <span class="p">*</span> <span class="p">(</span><span class="n">dfWidth</span> <span class="p">/</span> <span class="m">11</span><span class="p">))];</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">k</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">k</span> <span class="p">&lt;</span> <span class="m">10</span><span class="p">;</span> <span class="n">k</span><span class="p">++)</span>
+    <span class="p">{</span>
+        <span class="kt">int</span> <span class="n">low</span> <span class="p">=</span> <span class="m">10000</span><span class="p">;</span> <span class="c1">// testD[k][0];</span>
+
+        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">l</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">l</span> <span class="p">&lt;</span> <span class="n">dfHeight</span><span class="p">;</span> <span class="n">l</span><span class="p">++)</span>
+        <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">testD</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">l</span><span class="p">]</span> <span class="p">&lt;</span> <span class="n">low</span><span class="p">)</span>
+                <span class="n">low</span> <span class="p">=</span> <span class="n">testD</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">l</span><span class="p">];</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">low</span> <span class="p">==</span> <span class="m">10000</span><span class="p">)</span>
+            <span class="n">low</span> <span class="p">=</span> <span class="m">100</span><span class="p">;</span>
+
+        <span class="n">depthPoints</span><span class="p">[</span><span class="m">13</span><span class="p">-(</span><span class="n">k</span><span class="p">+</span><span class="m">2</span><span class="p">)]</span> <span class="p">=</span> <span class="n">low</span> <span class="p">/</span> <span class="m">10</span><span class="p">;</span>
+    <span class="p">}</span></code></pre></figure>
+
+<p>This section of code takes a sample of the Kinect DepthFrames, takes vertical slices, and finds the smallest values (indicating the closest object sensed) while filtering out false zeroes and other bad data.</p>
+
+<p>The depth slices are then combined with sonar data and passed to my partner’s code that decides when to stop the chair from driving because it is about to hit something, as well as drawing a visual representation on a WinForms page I implemented:</p>
+
+<p><img src="/assets/images/monitor.jpg" alt="Sonar Display" /></p>
+
+<p>This may not look like much, but it updates in realtime and gives a really clear picture of what the sensors
+are seeing. This monitor is attached to an articulating arm on the wheelchair, so testing this was easy. Here’s my partner Max running some tests:</p>
+
+<div style="width: 100%; margin: auto auto 10% auto;">
+	<div class="ytcontainer">
+		<iframe class="ytframe" src="http://www.youtube.com/embed/FQMp4DiPP_E" frameborder="0" allowfullscreen=""></iframe>
+	</div>
+</div>
+
+<p>We spent a lot of time driving toward walls and garbage cans, hoping the chair would decide not to run into them. By the end of the semester, the chair was reliably not running into anything. I did run myself over once, but that’s not important.</p>
+
+<p>In the end, this was a project that taught me how to work in a team, which I suspect is probably the secret purpose of senior projects. It’s like a trojan horse for developing valuable people
+skills.</p>
+
+<p>Although we had the same five-person team that every other group had, we ended up in a unique 
+situation where we split up into three subteams for the three different ideas I mentioned earlier.
+This required a lot of communication to make sure that our very separate components were on parallel paths to our ultimate goal.</p>
+
+<p>Within our team, we had two guys for whom English was their second language, another whose social skills occasionally created difficulty with communicating clearly, and we all had different skillsets that we had to figure out and leverage how we could. On top of our group dynamics, we also had advisers who, espcially considering the exploratory nature of our project, were constantly changing our requirements as we reported our progress every week.</p>
+
+<p>By the end of our project, we didn’t have our communication perfect, our collaboration wasn’t seamless, and I couldn’t convince everyone to use Slack properly, but we delivered what we were supposed to deliver, and learned a lot on the way.</p>
+
+<p><a href="http://www.github.com">Github Project Repo</a></p>
+
+
+    </div>
+  </div><a class="u-url" href="/2018/09/01/01Capstone.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Justin Hubbard</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Justin Hubbard</li><li><a class="u-email" href="mailto:justin.hubbard@wsu.edu">justin.hubbard@wsu.edu</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/justin-hubbard"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">justin-hubbard</span></a></li><li><a href="https://instagram.com/justinhubbard"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg> <span class="username">justinhubbard</span></a></li><li><a href="https://www.linkedin.com/in/justin-hubbard-158030b5"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">justin-hubbard-158030b5</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Honestly, learning to use all the tools involved in this site was worth it even if no one actually visits. That said, I hope you, whoever you are, have enjoyed looking at my stuff here. Have an awesome day and remember to be kind.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

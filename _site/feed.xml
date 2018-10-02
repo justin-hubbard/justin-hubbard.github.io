@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2018-10-01T19:16:58-07:00</updated><id>http://localhost:4000/</id><title type="html">Justin Hubbard</title><subtitle>Honestly, learning to use all the tools involved in this site was worth it even if no one actually visits. That said, I hope you, whoever you are, have enjoyed looking at my stuff here. Have an awesome day and remember to be kind.</subtitle><entry><title type="html">Assistive Wheelchair Technologies for ALS Patients</title><link href="http://localhost:4000/2018/09/01/01Capstone.html" rel="alternate" type="text/html" title="Assistive Wheelchair Technologies for ALS Patients" /><published>2018-09-01T14:29:18-07:00</published><updated>2018-09-01T14:29:18-07:00</updated><id>http://localhost:4000/2018/09/01/01Capstone</id><content type="html" xml:base="http://localhost:4000/2018/09/01/01Capstone.html">&lt;h4 id=&quot;for-my-senior-design-project-at-washington-state-university-i-and-four-others-took-on-the-continuation-of-the-autonomous-wheelchair-project-supported-by-microsoft-and-team-gleason&quot;&gt;For my Senior Design Project at Washington State University, I and four others took on the continuation of the Autonomous Wheelchair project, supported by Microsoft and Team Gleason.&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/Eris-Poster.png&quot; alt=&quot;Poster for the End of Year Poster Session&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The main goal of this then three-year project was to take a standard assistive wheelchair and explore ways
+that adding technology to it could improve the lives of people living with ALS. People with ALS can have a wide range of mobility levels ranging from mild impairment that allows for use of keyboards and joysticks to total impairment leaving only eye movement, so we had to be creative
+with our ideas.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;With the help of our faculty mentors, we landed on three ideas to implement:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;keyboard typing interfaces using Tobii eye-tracking&lt;/li&gt;
+  &lt;li&gt;Kinect and sonar-based object sensing&lt;/li&gt;
+  &lt;li&gt;Programmatic motor calibration.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;These requirements were reached over the course of two semesters of trial and error, constantly reassessing
+how realistic or feasible our ideas were. Out of my interest in computer vision and sensors generally, I was
+able to work on the Kinect/Sonar components along with one other teammate.&lt;/p&gt;
+
+&lt;p&gt;Previous years had hooked the chair up to
+an Arduino for controling the motors and added an Intel NUC with a screen for more power intensive software. They did some work
+with navigation using sensors mounted on the walls, and also made some progress with door detection using a Kinect, but
+we decided to move on to more general solutions.&lt;/p&gt;
+
+&lt;p&gt;When we initially tested the object detection implementation from the previous year, it was giving us false
+positives almost exclusively. Not great. So we changed approaches and focused on depth sensing. Luckily, the
+Kinect provides DepthFrames, so I was able to combine those with the actual sonar sensors on the chair to
+create an array of depth sensors.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-csharp&quot; data-lang=&quot;csharp&quot;&gt;&lt;span class=&quot;n&quot;&gt;BaseFrame&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;frame&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;BackgroundStream&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;GetFrame&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;DFrame&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;df&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DFrame&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;BackgroundStream&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;GetFrame&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;null&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dfHeight&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;GetHeight&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dfWidth&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;GetWidth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+
+    &lt;span class=&quot;kt&quot;&gt;ushort&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dd&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;get_DepthData&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;kDepths&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[][]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;testD&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][];&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;z&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;z&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;z&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;++)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;testD&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;z&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dfHeight&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dfHeight&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;++)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// Loop over each column of the array&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;11&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;++)&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pixelVal&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dfWidth&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dfWidth&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;11&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))];&lt;/span&gt;
+
+            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pixelVal&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;testD&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;10000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;testD&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dfWidth&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dfWidth&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;11&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))];&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;++)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;low&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;10000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// testD[k][0];&lt;/span&gt;
+
+        &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;l&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;l&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dfHeight&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;l&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;++)&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;testD&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;l&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;low&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;low&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;testD&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;l&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;low&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;10000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;low&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+        &lt;span class=&quot;n&quot;&gt;depthPoints&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;13&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;-(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;low&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This section of code takes a sample of the Kinect DepthFrames, takes vertical slices, and finds the smallest values (indicating the closest object sensed) while filtering out false zeroes and other bad data.&lt;/p&gt;
+
+&lt;p&gt;The depth slices are then combined with sonar data and passed to my partner’s code that decides when to stop the chair from driving because it is about to hit something, as well as drawing a visual representation on a WinForms page I implemented:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/monitor.jpg&quot; alt=&quot;Sonar Display&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This may not look like much, but it updates in realtime and gives a really clear picture of what the sensors
+are seeing. This monitor is attached to an articulating arm on the wheelchair, so testing this was easy. Here’s my partner Max running some tests:&lt;/p&gt;
+
+&lt;div style=&quot;width: 100%; margin: auto auto 10% auto;&quot;&gt;
+	&lt;div class=&quot;ytcontainer&quot;&gt;
+		&lt;iframe class=&quot;ytframe&quot; src=&quot;http://www.youtube.com/embed/FQMp4DiPP_E&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
+	&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;We spent a lot of time driving toward walls and garbage cans, hoping the chair would decide not to run into them. By the end of the semester, the chair was reliably not running into anything. I did run myself over once, but that’s not important.&lt;/p&gt;
+
+&lt;p&gt;In the end, this was a project that taught me how to work in a team, which I suspect is probably the secret purpose of senior projects. It’s like a trojan horse for developing valuable people
+skills.&lt;/p&gt;
+
+&lt;p&gt;Although we had the same five-person team that every other group had, we ended up in a unique 
+situation where we split up into three subteams for the three different ideas I mentioned earlier.
+This required a lot of communication to make sure that our very separate components were on parallel paths to our ultimate goal.&lt;/p&gt;
+
+&lt;p&gt;Within our team, we had two guys for whom English was their second language, another whose social skills occasionally created difficulty with communicating clearly, and we all had different skillsets that we had to figure out and leverage how we could. On top of our group dynamics, we also had advisers who, espcially considering the exploratory nature of our project, were constantly changing our requirements as we reported our progress every week.&lt;/p&gt;
+
+&lt;p&gt;By the end of our project, we didn’t have our communication perfect, our collaboration wasn’t seamless, and I couldn’t convince everyone to use Slack properly, but we delivered what we were supposed to deliver, and learned a lot on the way.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.github.com&quot;&gt;Github Project Repo&lt;/a&gt;&lt;/p&gt;</content><author><name></name></author><category term="code" /><summary type="html">For my Senior Design Project at Washington State University, I and four others took on the continuation of the Autonomous Wheelchair project, supported by Microsoft and Team Gleason.</summary></entry><entry><title type="html">Python-based PostScript Interpreter</title><link href="http://localhost:4000/2018/08/28/04postscript-interp.html" rel="alternate" type="text/html" title="Python-based PostScript Interpreter" /><published>2018-08-28T14:29:18-07:00</published><updated>2018-08-28T14:29:18-07:00</updated><id>http://localhost:4000/2018/08/28/04postscript-interp</id><content type="html" xml:base="http://localhost:4000/2018/08/28/04postscript-interp.html">&lt;h4 id=&quot;in-the-1980s-printers-sucked-and-needed-a-language-like-postscript-to-make-them-suck-less-therefore-35-years-later-our-programming-languages-course-had-us-write-a-postscript-interpreter-in-python&quot;&gt;In the 1980s, printers sucked and needed a language like PostScript to make them suck less. Therefore, 35 years later, our Programming Languages course had us write a PostScript interpreter in Python.&lt;/h4&gt;
+
+&lt;p&gt;Here’s an example of a simple PostScript program:&lt;/p&gt;</content><author><name></name></author><category term="presentations" /><summary type="html">In the 1980s, printers sucked and needed a language like PostScript to make them suck less. Therefore, 35 years later, our Programming Languages course had us write a PostScript interpreter in Python.</summary></entry><entry><title type="html">Silly Web Toys</title><link href="http://localhost:4000/2018/06/11/06WebToys.html" rel="alternate" type="text/html" title="Silly Web Toys" /><published>2018-06-11T14:29:18-07:00</published><updated>2018-06-11T14:29:18-07:00</updated><id>http://localhost:4000/2018/06/11/06WebToys</id><content type="html" xml:base="http://localhost:4000/2018/06/11/06WebToys.html">&lt;h4 id=&quot;the-web-dev-class-i-took-had-a-few-make-whatever-you-feel-like-assignments-so-i-made-a-couple-weird-things-to-see-what-would-happen&quot;&gt;The web dev class I took had a few “make whatever you feel like” assignments so I made a couple weird things to see what would happen&lt;/h4&gt;
+
+&lt;script type=&quot;text/javascript&quot; src=&quot;/assets/synth.js&quot;&gt;&lt;/script&gt;
+
+&lt;h2 id=&quot;exploring-synthesizing-capabilities-of-javascript&quot;&gt;Exploring Synthesizing Capabilities of Javascript&lt;/h2&gt;
+
+&lt;p&gt;Type a note with its octave in the text field (i.e. C3, A5, D4), then select any waveform and filter you’d like.
+ The images of the waves don’t always work. If the sounds won’t turn off, refresh the page. I’ll fix these problems once
+ I get the whole site up, don’t worry.&lt;/p&gt;
+
+&lt;div class=&quot;synth&quot;&gt;
+    &lt;body style=&quot;font-family:helvetica&quot;&gt;
+    &lt;table style=&quot;width:60%&quot; border=&quot;5&quot;&gt;
+        &lt;td&gt;
+            &lt;table style=&quot;width:100%&quot;&gt;
+                &lt;tr&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td&gt;Oscilloscope&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td&gt;Waveforms&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td&gt;Filter&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td&gt;Note&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;/tr&gt;
+            &lt;/table&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            &lt;table style=&quot;width:100%&quot;&gt;
+                &lt;tr&gt;
+                    &lt;th&gt; Oscillator 1 &lt;/th&gt;
+                    &lt;th&gt; Oscillator 2 &lt;/th&gt;
+                    &lt;th&gt; Oscillator 3 &lt;/th&gt;
+                &lt;/tr&gt;
+                &lt;tr&gt;
+                    &lt;td&gt;&lt;canvas style=&quot;width:100%&quot; class=&quot;visual&quot; id=&quot;vis1&quot; name=&quot;osc1&quot;&gt;&lt;/canvas&gt;&lt;/td&gt;
+                    &lt;td&gt;&lt;canvas style=&quot;width:100%&quot; class=&quot;visual&quot; id=&quot;vis2&quot; name=&quot;osc2&quot;&gt;&lt;/canvas&gt;&lt;/td&gt;
+                    &lt;td&gt;&lt;canvas style=&quot;width:100%&quot; class=&quot;visual&quot; id=&quot;vis3&quot; name=&quot;osc3&quot;&gt;&lt;/canvas&gt;&lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;tr&gt;
+                    &lt;td&gt;&lt;select class=&quot;wave&quot; name=&quot;osc1&quot;&gt;
+                          &lt;option value=&quot;sine&quot;&gt;Sine&lt;/option&gt;
+                          &lt;option value=&quot;square&quot;&gt;Square&lt;/option&gt;
+                          &lt;option value=&quot;sawtooth&quot;&gt;Sawtooth&lt;/option&gt;
+                          &lt;option value=&quot;triangle&quot;&gt;Triangle&lt;/option&gt;
+                    &lt;/select&gt;&lt;/td&gt;
+                    &lt;td&gt;&lt;select class=&quot;wave&quot; name=&quot;osc2&quot;&gt;
+                          &lt;option value=&quot;sine&quot;&gt;Sine&lt;/option&gt;
+                          &lt;option value=&quot;square&quot;&gt;Square&lt;/option&gt;
+                          &lt;option value=&quot;sawtooth&quot;&gt;Sawtooth&lt;/option&gt;
+                          &lt;option value=&quot;triangle&quot;&gt;Triangle&lt;/option&gt;
+                    &lt;/select&gt;&lt;/td&gt;
+                    &lt;td&gt;&lt;select class=&quot;wave&quot; name=&quot;osc3&quot;&gt;
+                          &lt;option value=&quot;sine&quot;&gt;Sine&lt;/option&gt;
+                          &lt;option value=&quot;square&quot;&gt;Square&lt;/option&gt;
+                          &lt;option value=&quot;sawtooth&quot;&gt;Sawtooth&lt;/option&gt;
+                          &lt;option value=&quot;triangle&quot;&gt;Triangle&lt;/option&gt;
+                    &lt;/select&gt;&lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;tr&gt;
+                    &lt;td&gt;&lt;select class=&quot;filter&quot; name=&quot;osc1&quot;&gt;
+                          &lt;option value=&quot;lowpass&quot;&gt;Lowpass&lt;/option&gt;
+                          &lt;option value=&quot;highpass&quot;&gt;Highpass&lt;/option&gt;
+                          &lt;option value=&quot;bandpass&quot;&gt;Bandpass&lt;/option&gt;
+                          &lt;option value=&quot;none&quot;&gt;None&lt;/option&gt;
+                    &lt;/select&gt;&lt;/td&gt;
+                    &lt;td&gt;&lt;select class=&quot;filter&quot; name=&quot;osc2&quot;&gt;
+                          &lt;option value=&quot;lowpass&quot;&gt;Lowpass&lt;/option&gt;
+                          &lt;option value=&quot;highpass&quot;&gt;Highpass&lt;/option&gt;
+                          &lt;option value=&quot;bandpass&quot;&gt;Bandpass&lt;/option&gt;
+                          &lt;option value=&quot;none&quot;&gt;None&lt;/option&gt;
+                    &lt;/select&gt;&lt;/td&gt;
+                    &lt;td&gt;&lt;select class=&quot;filter&quot; name=&quot;osc3&quot;&gt;
+                          &lt;option value=&quot;lowpass&quot;&gt;Lowpass&lt;/option&gt;
+                          &lt;option value=&quot;highpass&quot;&gt;Highpass&lt;/option&gt;
+                          &lt;option value=&quot;bandpass&quot;&gt;Bandpass&lt;/option&gt;
+                          &lt;option value=&quot;none&quot;&gt;None&lt;/option&gt;
+                    &lt;/select&gt;&lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;tr&gt;
+                    &lt;td&gt;&lt;input type=&quot;text&quot; id=&quot;txt1&quot; name=&quot;osc1&quot; min=&quot;100&quot; max=&quot;1000&quot; step=&quot;10&quot; value=&quot;A4&quot; /&gt;&lt;/td&gt;
+                    &lt;td&gt;&lt;input type=&quot;text&quot; id=&quot;txt2&quot; name=&quot;osc2&quot; min=&quot;100&quot; max=&quot;1000&quot; step=&quot;10&quot; value=&quot;A4&quot; /&gt;&lt;/td&gt;
+                    &lt;td&gt;&lt;input type=&quot;text&quot; id=&quot;txt3&quot; name=&quot;osc3&quot; min=&quot;100&quot; max=&quot;1000&quot; step=&quot;10&quot; value=&quot;A4&quot; /&gt;&lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;tr&gt;
+                    &lt;td&gt;&lt;button class=&quot;play&quot; name=&quot;osc1&quot;&gt;Play&lt;/button&gt;&lt;button class=&quot;stop&quot; name=&quot;osc1&quot;&gt;Stop&lt;/button&gt;&lt;/td&gt;
+                    &lt;td&gt;&lt;button class=&quot;play&quot; name=&quot;osc2&quot;&gt;Play&lt;/button&gt;&lt;button class=&quot;stop&quot; name=&quot;osc2&quot;&gt;Stop&lt;/button&gt;&lt;/td&gt;
+                    &lt;td&gt;&lt;button class=&quot;play&quot; name=&quot;osc3&quot;&gt;Play&lt;/button&gt;&lt;button class=&quot;stop&quot; name=&quot;osc3&quot;&gt;Stop&lt;/button&gt;&lt;/td&gt;
+                    
+                &lt;/tr&gt;
+            &lt;/table&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            &lt;table style=&quot;width:100%&quot;&gt;
+                &lt;th&gt; Master &lt;/th&gt;
+                &lt;tr&gt;
+                    &lt;td&gt;&lt;button class=&quot;Globe&quot; name=&quot;play&quot;&gt;Play All&lt;/button&gt;&lt;button class=&quot;Globe&quot; name=&quot;stop&quot;&gt;Stop All&lt;/button&gt;&lt;/td&gt;
+                &lt;/tr&gt;
+            &lt;/table&gt;
+        &lt;/td&gt;
+    &lt;/table&gt; 
+&lt;/body&gt; 
+&lt;/div&gt;
+
+&lt;h3 id=&quot;this-one-draws-colored-circles&quot;&gt;This one draws colored circles!&lt;/h3&gt;
+&lt;hr /&gt;
+&lt;p&gt;Click anywhere within the square and see the most incredible display you’ve ever seen inside a canvas tag!&lt;/p&gt;
+
+&lt;div class=&quot;canvasCont&quot;&gt;
+    &lt;canvas id=&quot;myCanvas&quot; width=&quot;600&quot; height=&quot;600&quot;&gt;&lt;/canvas&gt;
+        &lt;script&gt;
+        function RGB2Color(r,g,b)
+        {
+            return '#' + byte2Hex(r) + byte2Hex(g) + byte2Hex(b);
+        }
+        
+        function byte2Hex(n)
+        {
+            var nybHexString = &quot;0123456789ABCDEF&quot;;
+            return String(nybHexString.substr((n &gt;&gt; 4) &amp; 0x0F,1)) + nybHexString.substr(n &amp; 0x0F,1);
+        }
+        
+        function drawGrad(e)
+        {
+            var frequency = .3;
+            var canvas = document.getElementById('myCanvas');
+            var context = canvas.getContext('2d');
+            
+            var radius = 1;
+            var color = 0x003300;
+                
+            for (j = 0; j &lt; 500; j+=10)
+            {
+                var red = Math.sin(frequency*j + 0) * 128 + 127;
+                var grn = Math.sin(frequency*j + 2) * 128 + 127;
+                var blu = Math.sin(frequency*j + 4) * 128 + 127;
+                    
+                context.beginPath();
+                context.arc(e.layerX, e.layerY, radius+j, 0, 2 * Math.PI, false);
+                context.lineWidth = 1;
+                context.strokeStyle = RGB2Color(red,grn,blu);
+                context.stroke();
+             }  
+        }
+            var canvas = document.getElementById('myCanvas');
+            canvas.addEventListener(&quot;click&quot;, drawGrad, false);
+        &lt;/script&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;this-one-draws-animated-colored-circles-i-should-have-lead-with-this-one-its-better&quot;&gt;This one draws animated colored circles! I should have lead with this one! It’s better!&lt;/h3&gt;
+&lt;hr /&gt;
+&lt;p&gt;Click anywhere within the square and see the &lt;strong&gt;actual&lt;/strong&gt; most incredible display you’ve ever seen inside a canvas tag!&lt;/p&gt;
+
+&lt;div class=&quot;canvasCont&quot;&gt;
+    &lt;canvas id=&quot;animCirc&quot; width=&quot;600&quot; height=&quot;600&quot;&gt;&lt;/canvas&gt;
+        &lt;script&gt;
+        function RGB2Color(r,g,b)
+        {
+            return '#' + byte2Hex(r) + byte2Hex(g) + byte2Hex(b);
+        }
+        
+        function byte2Hex(n)
+        {
+            var nybHexString = &quot;0123456789ABCDEF&quot;;
+            return String(nybHexString.substr((n &gt;&gt; 4) &amp; 0x0F,1)) + nybHexString.substr(n &amp; 0x0F,1);
+        }
+        
+        function drawGrad(e)
+        {
+            var frequency = .3;
+            var canvas = document.getElementById('animCirc');
+            var context = canvas.getContext('2d');
+            var f1 = Math.random();
+            var f2 = Math.random();
+            var f3 = Math.random();
+            var alpha = Math.random();
+            var radius = 1;
+            var color = 0x003300;
+                
+            (function looper(canvas, context, f1, f2, f3, alpha, radius, color, strt, max){
+                setTimeout(function ()
+                {
+                    var red = Math.sin(f1*strt + 0) * 128 + 127;
+                    var grn = Math.sin(f2*strt + 2) * 128 + 127;
+                    var blu = Math.sin(f3*strt + 4) * 128 + 127;
+                        
+                    context.beginPath();
+                    context.arc(e.layerX, e.layerY, radius+strt, 0, 2 * Math.PI, false);
+                    context.lineWidth = 1;
+                    context.strokeStyle = RGB2Color(red,grn,blu);
+                    context.globalAlpha = alpha;
+                    context.stroke();
+                    
+                    if (strt+= 5 &lt; max)
+                    {
+                        looper(canvas, context, f1, f2, f3, radius, alpha, color, strt, max);   
+                    }
+                    
+                 }, 10);
+            })(canvas, context, f1, f2, f3, radius, alpha, color, 0, 200);  
+        }
+            var canvas = document.getElementById('animCirc');
+            canvas.addEventListener(&quot;click&quot;, drawGrad, false);
+        &lt;/script&gt;
+&lt;/div&gt;</content><author><name></name></author><category term="code" /><summary type="html">The web dev class I took had a few “make whatever you feel like” assignments so I made a couple weird things to see what would happen</summary></entry><entry><title type="html">Gerontechnology Android Tablet Application Concept</title><link href="http://localhost:4000/2018/06/11/05GerontechDesign.html" rel="alternate" type="text/html" title="Gerontechnology Android Tablet Application Concept" /><published>2018-06-11T14:29:18-07:00</published><updated>2018-06-11T14:29:18-07:00</updated><id>http://localhost:4000/2018/06/11/05GerontechDesign</id><content type="html" xml:base="http://localhost:4000/2018/06/11/05GerontechDesign.html">&lt;h4 id=&quot;a-concept-for-an-intuitive-readable-app-that-would-assist-elderly-users-in-managing-their-lives&quot;&gt;A concept for an intuitive, readable app that would assist elderly users in managing their lives&lt;/h4&gt;
+
+&lt;p&gt;I took a class called Gerontechnology which was centered around assistive technology for the elderly. As we all know,
+they have a variety of additional difficulties as a result of the things that come with old age, so our focus was
+on what those difficulties are and how technology can help. Our end of semester project was to develop a concept
+product based on a particular concept. Our group was chosen to work on designing a Dynamic Memory Notebook. This has
+traditionally been a pen and paper tool for keeping track of appointments, medications, chores, meals, etc. so that
+individuals with memory problems can record things instead of relying on remembering large amounts of information.&lt;/p&gt;
+
+&lt;p&gt;Like many pen and paper tools, there is a clear benefit to adding tech to make the process simpler and more automatic.
+Our group identified the crucial functionality like calendar keeping, medication lists, allergy records, and to-do lists
+and began working on a way to arrange these functions into a tablet application. Tablets are especially good for the elderly
+because text and buttons can be larger than smartphones. Of course, a mobile app could do all the same things, but for this project
+we focused on home use which a tablet is perfectly suited for. It also left room for potential smart home integration which was
+a large portion of the course’s focus.&lt;/p&gt;
+
+&lt;p&gt;I was tasked with doing the graphic design concepts for the application, and I’ve included the example screenshots below:&lt;/p&gt;
+
+&lt;h3 id=&quot;active-life&quot;&gt;ACTIVE LIFE&lt;/h3&gt;
+&lt;hr /&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/DMN-START.png&quot; alt=&quot;Dynamic Memory Notebook Start Page&quot; /&gt;
+This is the page that a user would be presented upon opening the app. Our working name for the app was “Active Life” which is
+meant to be uplifting and positive, making it clear that the goal is to enable a life without avoidable problems. The design language
+includes large buttons with drop shadow that are easy to see and have a large area to tap. Each button also includes a large, clear icon
+and large text so that each button’s function is obvious.
+&lt;img src=&quot;/assets/images/DMR2-CALENDAR.png&quot; alt=&quot;Dynamic Memory Notebook Calendar Page&quot; /&gt;
+After tapping the first button, the user is taken to the calendar page. Like most calendar apps, it includes the ability to view events in
+a day view, week view, or month view. Here, the day view is shown. As time goes on, earlier times are grayed out so the user knows where they are
+in the day. More work is certainly needed to make each hour or half hour seem more distinct, which would remove the need for redundant labels for event times. This functionality is perfect for older users because it can incorporate things like medication schedules into the one calendar that they use.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/DMR2-Profile.png&quot; alt=&quot;Dynamic Memory Notebook Profile Page&quot; /&gt;
+Keeping relevant data is very important to older individuals who may need medical attention at home at any time. Many will have bracelets with
+data like blood type, medications, allergies, etc, but the app would be able to store much for information like recent vitals, emergency contacts, and
+recent medical procedures. This is also where they would input a lot of their data for the app.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/DMR2-Main.png&quot; alt=&quot;Dynamic Memory Notebook Main Page&quot; /&gt;
+The to-do list functionality is probably the most important part of the application. It functions like any other to-do list, but it
+also auto-populates with items from the calendar and from the medications list, so the user has to do less work to remember everything for the day.
+Anything that removes pressure for the user to use their memory is essential, and a to-do list is the obvious starting place.&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;p&gt;&lt;br /&gt;
+This course and this project were the first opportunities I had to learn about and work on assistive technology, and sparked a passion
+that I carried on into my senior design Assistive Wheelchair project. I hope that I am able to work with accessibility and assitive tech
+as a part of my career at some point.&lt;/p&gt;</content><author><name></name></author><category term="design" /><summary type="html">A concept for an intuitive, readable app that would assist elderly users in managing their lives</summary></entry><entry><title type="html">Unnecessarily Long Python List Comprehension for Codex Crack</title><link href="http://localhost:4000/2018/06/11/05350listcompr.html" rel="alternate" type="text/html" title="Unnecessarily Long Python List Comprehension for Codex Crack" /><published>2018-06-11T14:29:18-07:00</published><updated>2018-06-11T14:29:18-07:00</updated><id>http://localhost:4000/2018/06/11/05350listcompr</id><content type="html" xml:base="http://localhost:4000/2018/06/11/05350listcompr.html">&lt;h4 id=&quot;this-was-an-easy-assignment-that-i-used-to-teach-myself-the-abilities-of-python-list-comprehensions-and-to-find-the-limits-of-code-readability&quot;&gt;This was an easy assignment that I used to teach myself the abilities of python list comprehensions and to find the limits of code readability.&lt;/h4&gt;
+
+&lt;p&gt;We were given a string of text, a codex of char:integer pairs, and a public key. I had written out separate lines for each part of the list
+comprehension, but quickly realized that I could nest all of them in one statement (obviously on one line, which would have been ugly to have to scroll through down below),
+so I proceeded to do so.&lt;/p&gt;
+
+&lt;p&gt;This is not a helpful thing to do, but I did successfully explain it to my non-CS roommate at the time, so I think someone learned something at some point.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;math&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;gmpy&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;ciph&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'A'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'E'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'G'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'I'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'O'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    		&lt;span class=&quot;s&quot;&gt;'R'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'T'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'X'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'!'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;9&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'0'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;ncrpt&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;ITG!AAEXEX IRRG!IGRXI OIXGEREAGO&quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;e&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;49&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10539750919&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;v&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ciph&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;items&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()}[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)]&lt;/span&gt; 
+	    		&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;num&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
+	    		&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;num&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;pow&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PKey&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; 
+	    		&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;st&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))))&lt;/span&gt; 
+	    		&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;st&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ciph&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;xs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; 
+	    		&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;xs&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ncrpt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()]]]])]&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;PKey&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;math&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;floor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;math&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sqrt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)),&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;p&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gmpy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;invert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;math&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;floor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__name__&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'__main__'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This was a simple assignment meant to introduce us to codex concepts, but what it really introduced me to how fun Python is. I’d used it plenty, but
+hadn’t explored the “Pythonic” ways of doing things, so taking it to the extreme like I did here was a goofy way to get more familiar with the power
+of list comprehensions.&lt;/p&gt;</content><author><name></name></author><category term="code" /><summary type="html">This was an easy assignment that I used to teach myself the abilities of python list comprehensions and to find the limits of code readability.</summary></entry><entry><title type="html">C Implementation of MTX Shell</title><link href="http://localhost:4000/2018/06/11/03CPTS460Final.html" rel="alternate" type="text/html" title="C Implementation of MTX Shell " /><published>2018-06-11T14:29:18-07:00</published><updated>2018-06-11T14:29:18-07:00</updated><id>http://localhost:4000/2018/06/11/03CPTS460Final</id><content type="html" xml:base="http://localhost:4000/2018/06/11/03CPTS460Final.html">&lt;p&gt;This project was massively difficult but massively rewarding.&lt;/p&gt;</content><author><name></name></author><category term="code" /><summary type="html">This project was massively difficult but massively rewarding.</summary></entry><entry><title type="html">C Implementation of a Linux-Compatible EXT-2 Filesystem</title><link href="http://localhost:4000/2018/06/11/02CPTS360Final.html" rel="alternate" type="text/html" title="C Implementation of a Linux-Compatible EXT-2 Filesystem" /><published>2018-06-11T14:29:18-07:00</published><updated>2018-06-11T14:29:18-07:00</updated><id>http://localhost:4000/2018/06/11/02CPTS360Final</id><content type="html" xml:base="http://localhost:4000/2018/06/11/02CPTS360Final.html">&lt;h4 id=&quot;this-project-was-very-difficult-but-very-rewarding&quot;&gt;This project was very difficult but very rewarding.&lt;/h4&gt;
+
+&lt;p&gt;This was the first of two courses I took from the only professor
+I think I ever had who wrote the textbook for the class. The goal of this course was to
+understand how the EXT-2 filesystem works by implementing some of its core functionality.
+EXT-2 is not the most modern form of the filesystem (which is now up to ext-4), but as the
+first commercial quality Linux FS in 1993, it’s a great place to start teaching us the
+basics of -nix. I also think the professor uses a computer made no later than 1998,
+which may be a factor.&lt;/p&gt;
+
+&lt;p&gt;The assignemnt essentially boiled down to implementing a few of the shell commands used
+for file system changes and the underlying logic in C.&lt;/p&gt;
+
+&lt;p&gt;Those commands included cd, ls, pwd, stat, mkdir, rmdir, creat, touch, link, symlink, rm, and unlink. Those commands relied on some lower-level functions like iget, iput, search, ialloc for dealing with inodes and traversing the filesystem.&lt;/p&gt;
+
+&lt;p&gt;Most of these commands are accomplished with some combination of parsing a filepath, finding the inode for a file/folder, and performing some allocation or deallocation of disk blocks.&lt;/p&gt;
+
+&lt;p&gt;The rmdir command is a good example, used for deleting folders. This command does not include
+the ability to recursively delete the contents of a folder, so it does a check for folder contents in the bottom half. This section also features some logic that comes up in most of these
+commands with some slight variations, where a while loop is used to iterate specifically through 
+the blocks in memory based on record size, since files are rarely the same size.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;my_rmdir&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pathname&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;namebuf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;parentPath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;childPath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;pathCpy1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pathCpy2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;BLKSIZE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;MINODE&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;parent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;toRemove&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pino&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rino&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pathname&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;need a path, dude&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;strcpy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pathCpy1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pathname&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;strcpy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pathCpy2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pathname&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;// Get parent and child pathnames&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;strcpy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;parentPath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dirname&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pathCpy1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;strcpy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;childPath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;basename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pathCpy2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Parent: %s, Child: %s&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;parentPath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;childPath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;pino&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;getino&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;parentPath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;rino&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;getino&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;childPath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;// Make sure both are valid&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pino&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rino&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;your path was not valid&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;parent&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;iget&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pino&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// Containing dir MINODE&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;toRemove&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;iget&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rino&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;S_ISDIR&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;toRemove&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;INODE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i_mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;it's gotta be a dir, dude&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;// CHECK IF DIR IS EMPTY&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;toRemove&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;INODE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i_links_count&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// dirs usualy have two links&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;11&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// loops through direct blocks&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;toRemove&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;INODE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i_block&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;get_block&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;toRemove&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dev&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;toRemove&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;INODE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i_block&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; 
+                &lt;span class=&quot;n&quot;&gt;cp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;dp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;DIR&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+                &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;BLKSIZE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                    &lt;span class=&quot;n&quot;&gt;strncpy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;namebuf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name_len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+                    &lt;span class=&quot;n&quot;&gt;namebuf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name_len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+                    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;strcmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;namebuf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;.&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;strcmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;namebuf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;..&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+                    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                        &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Can't remove dir with crap in it!&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+                        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+                    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+                    &lt;span class=&quot;n&quot;&gt;cp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rec_len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+                    &lt;span class=&quot;n&quot;&gt;dp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;DIR&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;reduce&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;toRemove&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;iput&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;toRemove&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;idealloc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;toRemove&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ino&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;deleteChild&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;parent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;childPath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Prior to this course, I had decent knowledge of shell commands and filesystems, but I didn’t have
+any experience with the low level concepts of how the filesystem operates. It was eye-opening to
+get a real understanding of how much behind-the-scenes work goes on to maintain a filesystem. For
+a very long time now, there’s been no real need to be familiar with inodes, memory blocks, file descriptors, etc.
+but having this knowledge has given me a new appreciation for what really goes on closer to the metal.&lt;/p&gt;
+
+&lt;p&gt;Perhaps the most valuable practice that came from this project however was the extensive use of C. Some of my early
+introductory classes used C, but it wasn’t until this project that I had to really dig down and understand the language
+and learn how to do higher level things like managing pointers or writing directly to a disk.&lt;/p&gt;
+
+&lt;p&gt;This course was widely known among CS students to be one of, if not the hardest courses we had to take for our degrees,
+and I lemented its eventuality, but once it was over I found it incredibly satisfying. There’s not much else that I’ve found
+that matches programming’s satisfaction, and this project provided that in droves.&lt;/p&gt;</content><author><name></name></author><category term="code" /><summary type="html">This project was very difficult but very rewarding.</summary></entry><entry><title type="html">Blob Mobile Game Concept Art</title><link href="http://localhost:4000/2018/06/11/01Shirts.html" rel="alternate" type="text/html" title="Blob Mobile Game Concept Art" /><published>2018-06-11T14:29:18-07:00</published><updated>2018-06-11T14:29:18-07:00</updated><id>http://localhost:4000/2018/06/11/01Shirts</id><content type="html" xml:base="http://localhost:4000/2018/06/11/01Shirts.html">&lt;h4 id=&quot;for-a-while-ive-had-an-idea-for-a-platforming-mobile-game-so-i-designed-some-charater-and-level-concepts-to-explore-the-art-direction&quot;&gt;For a while I’ve had an idea for a platforming mobile game, so I designed some charater and level concepts to explore the art direction.&lt;/h4&gt;
+
+&lt;p&gt;I’ve always enjoyed 2D sidescrollers, and one day I had an idea for a constantly scrolling game where you play as a blob who can take different forms
+with different abilities. In exploring this idea, and as some art practice, I drew some possible designs for the character and some concepts for levels
+with fun themes.&lt;/p&gt;
+
+&lt;h3 id=&quot;characters&quot;&gt;Characters&lt;/h3&gt;
+&lt;hr /&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/Happy-Beta.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;/assets/images/Blocky-Beta.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;/assets/images/Main-Angry.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;/assets/images/Main-Excited.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;/assets/images/Trippy Dude.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;levels&quot;&gt;Levels&lt;/h3&gt;
+&lt;hr /&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/Infinite Guitar.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;/assets/images/Guitar-Harp-Hat.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><category term="design" /><summary type="html">For a while I’ve had an idea for a platforming mobile game, so I designed some charater and level concepts to explore the art direction.</summary></entry><entry><title type="html">Blob Mobile Game Concept Art</title><link href="http://localhost:4000/2018/06/11/01Blob-Game.html" rel="alternate" type="text/html" title="Blob Mobile Game Concept Art" /><published>2018-06-11T14:29:18-07:00</published><updated>2018-06-11T14:29:18-07:00</updated><id>http://localhost:4000/2018/06/11/01Blob%20Game</id><content type="html" xml:base="http://localhost:4000/2018/06/11/01Blob-Game.html">&lt;h4 id=&quot;for-a-while-ive-had-an-idea-for-a-platforming-mobile-game-so-i-designed-some-charater-and-level-concepts-to-explore-the-art-direction&quot;&gt;For a while I’ve had an idea for a platforming mobile game, so I designed some charater and level concepts to explore the art direction.&lt;/h4&gt;
+
+&lt;p&gt;I’ve always enjoyed 2D sidescrollers, and one day I had an idea for a constantly scrolling game where you play as a blob who can take different forms
+with different abilities. In exploring this idea, and as some art practice, I drew some possible designs for the character and some concepts for levels
+with fun themes.&lt;/p&gt;
+
+&lt;h3 id=&quot;characters&quot;&gt;Characters&lt;/h3&gt;
+&lt;hr /&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/Happy-Beta.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;/assets/images/Blocky-Beta.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;/assets/images/Main-Angry.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;/assets/images/Main-Excited.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;/assets/images/Trippy Dude.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;levels&quot;&gt;Levels&lt;/h3&gt;
+&lt;hr /&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/Infinite Guitar.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;/assets/images/Guitar-Harp-Hat.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><category term="design" /><summary type="html">For a while I’ve had an idea for a platforming mobile game, so I designed some charater and level concepts to explore the art direction.</summary></entry></feed>

@@ -1,0 +1,21 @@
+---
+layout: default
+---
+
+<div class="middle">
+	<h1>{{ page.tag }}<hr></h1>
+
+
+	<ul class="post-list">
+		{% for post in site.tags[page.tag] %}
+		<li>
+			<a class="post-link" href="{{ post.url }}">{{ post.title }}</a>
+			{%- if site.show_excerpts -%}
+       			<div class="excerpt">
+       				{{ post.excerpt }}
+       			</div>
+          {%- endif -%}
+		</li>
+		{% endfor %}
+	</ul>
+</div>

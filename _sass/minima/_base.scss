@@ -1,0 +1,399 @@
+/**
+ * Reset some basic elements
+ */
+body, h1, h2, h3, h4, h5, h6,
+p, blockquote, pre, hr,
+dl, dd, ol, ul, figure {
+  margin: 0;
+  padding: 0;
+}
+
+
+
+/**
+ * Basic styling
+ */
+body {
+  font: $base-font-weight #{$base-font-size}/#{$base-line-height} $base-font-family;
+  color: $text-color;
+  background-color: $background-color;
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-feature-settings: "kern" 1;
+     -moz-font-feature-settings: "kern" 1;
+       -o-font-feature-settings: "kern" 1;
+          font-feature-settings: "kern" 1;
+  font-kerning: normal;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+
+
+/**
+ * Set `margin-bottom` to maintain vertical rhythm
+ */
+h1, h2, h3, h4, h5, h6,
+p, blockquote, pre,
+ul, ol, dl, figure,
+%vertical-rhythm {
+  margin-bottom: $spacing-unit / 2;
+}
+
+h1 {
+  text-transform: capitalize;
+}
+
+
+/**
+ * `main` element
+ */
+main {
+  display: block; /* Default value of `display` of `main` element is 'inline' in IE 11. */
+}
+
+
+div.middle {
+  background-color: $foreground-color;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding-top: 5%;
+  padding-left: 5%;
+  padding-right: 5%;
+  padding-bottom: 5%;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  text-color: $white-color;
+}
+
+div.excerpt {
+  margin-top: 1%;
+  color: $honeydew-color;
+}
+
+
+/**
+ * Images
+ */
+img {
+  max-width: 100%;
+  vertical-align: middle;
+  padding-top: $spacing-unit;
+  padding-bottom: $spacing-unit;
+}
+
+div.synth {
+  width: 100%;
+}
+
+div.canvasCont {
+  width: 100%;
+  text-align: center;
+}
+
+canvas{
+  border: 1px solid $grey-color-light;
+  border-radius: 3px;
+  display: inline;
+}
+
+/**
+ * Youtube embed
+ */
+
+ div.ytcontainer {
+  width: 100%;
+  height: 0;
+  padding-top: $spacing-unit;
+  padding-bottom: 56.25%;
+  position: relative;
+}
+
+iframe.ytframe {
+  padding-top: $spacing-unit;
+  padding-bottom: $spacing-unit;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+/*
+* Main page div button wrapper
+*/
+div.cardwrap {
+  padding-top: 50%;
+}
+
+div.card {
+  /*width: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;*/
+
+  padding-top: 5%;
+  padding-left: 5%;
+  padding-right: 5%;
+  padding-bottom: 5%;
+
+  //margin-top: 20px;
+  //margin-bottom: 20px;
+
+  display: grid;
+
+  background-color: $foreground-color;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  text-align: center;
+
+  h3 {
+    margin-bottom: 0;
+    text-color: $canteloupe-color;
+  }
+}
+
+div.card:hover {
+  background-color: $honeydew-color;
+
+  div.card-title {
+    color: $grey-color-dark;
+  }
+
+  div.card-description {
+    color: $grey-color-dark;
+  }
+}
+
+.card-container {
+  display: grid;
+  //padding: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-gap: 1rem;
+}
+
+div.card-title {
+  margin-bottom: 0;
+  color: $canteloupe-color;
+  font-weight: $base-font-weight;
+  @include relative-font-size(1.625);
+  margin-top: 5%;
+}
+
+div.card-description {
+  color: $honeydew-color;
+  margin-bottom: 5%;
+}
+
+a.div-link:hover {
+  text-decoration: none;
+}
+
+
+/**
+ * Figures
+ */
+figure > img {
+  display: block;
+}
+
+figcaption {
+  font-size: $small-font-size;
+}
+
+
+
+/**
+ * Lists
+ */
+ul, ol {
+  margin-left: $spacing-unit;
+}
+
+li {
+  > ul,
+  > ol {
+    margin-bottom: 0;
+  }
+}
+
+
+
+/**
+ * Headings
+ */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: $base-font-weight;
+}
+
+
+
+/**
+ * Links
+ */
+a {
+  color: $brand-color;
+  text-decoration: none;
+
+  &:visited {
+    color: $brand-color;
+  }
+
+  &:hover {
+    color: $text-color;
+    text-decoration: underline;
+  }
+
+  .social-media-list &:hover {
+    text-decoration: none;
+
+    .username {
+      text-decoration: underline;
+    }
+  }
+}
+
+
+/**
+ * Blockquotes
+ */
+blockquote {
+  color: $grey-color;
+  border-left: 4px solid $grey-color-light;
+  padding-left: $spacing-unit / 2;
+  @include relative-font-size(1.125);
+  letter-spacing: -1px;
+  font-style: italic;
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+}
+
+
+
+/**
+ * Code formatting
+ */
+pre,
+code {
+  padding-top: $spacing-unit;
+  @include relative-font-size(0.9375);
+  border: 1px solid $grey-color-light;
+  border-radius: 3px;
+  background-color: $white-color;//#eef
+  color: #465436;
+}
+
+code {
+  background-color: $background-code;
+  padding: 1px 5px;
+  color: #456456;
+}
+
+pre {
+  background-color: $background-code;
+  padding: 8px 12px;
+  overflow-x: auto;
+
+  > code {
+    background-color: $background-code;
+    border: 0;
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+
+
+
+/**
+ * Wrapper
+ */
+.wrapper {
+  max-width: -webkit-calc(#{$content-width} - (#{$spacing-unit} * 2));
+  max-width:         calc(#{$content-width} - (#{$spacing-unit} * 2));
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: $spacing-unit;
+  padding-left: $spacing-unit;
+  @extend %clearfix;
+
+  @include media-query($on-laptop) {
+    max-width: -webkit-calc(#{$content-width} - (#{$spacing-unit}));
+    max-width:         calc(#{$content-width} - (#{$spacing-unit}));
+    padding-right: $spacing-unit / 2;
+    padding-left: $spacing-unit / 2;
+  }
+}
+
+
+
+/**
+ * Clearfix
+ */
+%clearfix:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+
+
+/**
+ * Icons
+ */
+
+.svg-icon {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    fill: #{$canteloupe-color};
+    padding-right: 5px;
+    vertical-align: text-top;
+}
+
+.social-media-list {
+  li + li {
+    padding-top: 5px;
+  }
+}
+
+
+
+/**
+ * Tables
+ */
+table {
+  //margin-bottom: $spacing-unit;
+  //width: 100%;
+  text-align: center;
+  //color: lighten($text-color, 18%);
+  //border-collapse: collapse;
+  border: 0px;
+  table-layout: fixed;
+  tr {
+    width: 100%;
+
+    &:nth-child(even) {
+      //background-color: lighten($grey-color-light, 6%);
+      
+    }
+  }
+  th, td {
+    //padding: ($spacing-unit / 3) ($spacing-unit / 2);
+    width: 100%;
+    position: relative;
+  }
+  th {
+    //background-color: lighten($grey-color-light, 3%);
+    //border: 1px solid darken($grey-color-light, 4%);
+    //border-bottom-color: darken($grey-color-light, 12%);
+    &:nth-child(even) {
+      padding: 0 0 0 10%;
+      background-color: $honeydew-color;
+    }
+  }
+  td {
+    //border: 1px solid $grey-color-light;
+  }
+}
