@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "SetLauncher for iOS (in progress"
+title: "SetLauncher for iOS (in progress)"
 date:   2018-06-11 20:29:18 -0100
 tags: personal
 ---
