@@ -1,0 +1,11 @@
+---
+layout: post
+title: "Blockhain"
+date:   2018-08-28 20:29:19 -0100
+tags: blockchain
+---
+
+#### Just kidding.
+
+Well you clicked here. What were the chances? I've done no blockchain work, but the mere mention of it apparently adds billions to
+company valuations, so I figured I should add a mention of it in an attempt to increase the valuation of my candidacy.
