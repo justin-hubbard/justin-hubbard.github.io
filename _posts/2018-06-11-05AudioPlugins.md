@@ -1,17 +1,17 @@
 ---
 layout: post
-title: "Unnecessarily Long Python List Comprehension for Codex Crack"
+title: "Audio Plugins in C++"
 date:   2018-06-11 20:29:18 -0100
-tags: code
+tags: personal
 ---
 
-#### This was an easy assignment that I used to teach myself the abilities of python list comprehensions and to find the limits of code readability.
+#### Delay, chorus, and flanger audio effects written in C++ using the JUCE framework
 
-We were given a string of text, a codex of char:integer pairs, and a public key. I had written out separate lines for each part of the list
-comprehension, but quickly realized that I could nest all of them in one statement (obviously on one line, which would have been ugly to have to scroll through down below),
-so I proceeded to do so. 
-
-This is not a helpful thing to do, but I did successfully explain it to my non-CS roommate at the time, so I think someone learned something at some point.
+I've played musical instruments all my life, and I've been in love with digital music production
+goin back to the days of pirating early versions of FL Studio back in highschool. Once I began studying
+software development, I became hungry to understand how the plugins I use every day are made. I joined an
+online course on the JUCE framework which gave me the knowledge to build these surprisingly great-sounding
+plugins, and will be helpful for projects to come in the future.
 
 
 
