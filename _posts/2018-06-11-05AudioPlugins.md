@@ -20,7 +20,7 @@ Delay effects essentially take an audio input and loop a portion of it back, cre
 
 The core concept behind implementing this effect in software is the use of a circular buffer. Basically, the plugin takes audio input 
 
-{% highlight c++ %}
+{% highlight cpp %}
 void DelayAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {
     ScopedNoDenormals noDenormals;
@@ -86,7 +86,3 @@ void DelayAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& 
     }
 }
 {% endhighlight %}
-
-This was a simple assignment meant to introduce us to codex concepts, but what it really introduced me to how fun Python is. I'd used it plenty, but
-hadn't explored the "Pythonic" ways of doing things, so taking it to the extreme like I did here was a goofy way to get more familiar with the power
-of list comprehensions.
