@@ -14,36 +14,77 @@ online course on the JUCE framework which gave me the knowledge to build these s
 plugins, and will be helpful for projects to come in the future.
 
 
+## Delay
+----
+Delay effects essentially take an audio input and loop a portion of it back, creating an echo-like sound.
 
+The core concept behind implementing this effect in software is the use of a circular buffer. Basically, the plugin takes audio input 
 
-{% highlight python %}
-import math
-import gmpy
+{% highlight c++ %}
+void DelayAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
+{
+    ScopedNoDenormals noDenormals;
+    auto totalNumInputChannels  = getTotalNumInputChannels();
+    auto totalNumOutputChannels = getTotalNumOutputChannels();
 
-def main():
-    ciph = {'A': 1, 'E': 2, 'G': 3, 'I': 4, 'O': 5,
-    		'R': 6, 'T': 7, 'X': 8, '!': 9, '0': 0}
-    ncrpt = "ITG!AAEXEX IRRG!IGRXI OIXGEREAGO"
-    e = 49
-    n = 10539750919
-
-    message = [{v:k for k,v in ciph.items()}[int(x)] 
-	    		for x in ''.join([str(num) 
-	    		for num in [int(pow(x,PKey(e, n),n)) 
-	    		for x in [int(''.join(list(map(str, st)))) 
-	    		for st in [[ciph[x] for x in xs] 
-	    		for xs in ncrpt.split()]]]])]
-    print(message)
-
-def PKey(e, n):
-    for i in range(math.floor(math.sqrt(n)), 0, -2):
-        if n % i == 0:
-            p = i
-            break
-    return gmpy.invert(e, (p-1)*(math.floor(n/p)-1))
-
-if __name__ == '__main__':
-    main()
+    // In case we have more outputs than inputs, this code clears any output
+    // channels that didn't contain input data, (because these aren't
+    // guaranteed to be empty - they may contain garbage).
+    // This is here to avoid people getting screaming feedback
+    // when they first compile a plugin, but obviously you don't need to keep
+    // this code if your algorithm always overwrites all the output channels.
+    for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
+        buffer.clear (i, 0, buffer.getNumSamples());
+    
+    
+    
+    float* leftChannel = buffer.getWritePointer(0);
+    float* rightChannel = buffer.getWritePointer(1);
+    
+    for (int i = 0; i < buffer.getNumSamples(); i++)
+    {
+        
+        mTimeSmoothed = mTimeSmoothed - 0.0001*(mTimeSmoothed - *mTimeParameter);
+        mDelayTimeInSamples =  getSampleRate() * mTimeSmoothed;
+        
+        mCircularBufferLeft[mCircularBufferWriteHead] = leftChannel[i] + mFeedbackLeft;
+        mCircularBufferRight[mCircularBufferWriteHead] = rightChannel[i] + mFeedbackRight;
+        
+        mDelayReadHead = mCircularBufferWriteHead - mDelayTimeInSamples;
+        
+        if (mDelayReadHead < 0)
+        {
+            mDelayReadHead += mCircularBufferLength;
+        }
+        
+        // interpolation
+        int readHead_x = (int)mDelayReadHead;
+        int readHead_x1 = readHead_x + 1;
+        float readHeadFloat = mDelayReadHead - readHead_x;
+        
+        if (readHead_x1 >= mCircularBufferLength)
+        {
+            readHead_x1 -= mCircularBufferLength;
+        }
+        // interp
+        
+        float delay_sample_left = lin_interp(mCircularBufferLeft[readHead_x], mCircularBufferLeft[readHead_x1], readHeadFloat);
+        float delay_sample_right = lin_interp(mCircularBufferRight[readHead_x], mCircularBufferRight[readHead_x1], readHeadFloat);
+        
+        mFeedbackLeft = delay_sample_left * *mFeedbackParameter;
+        mFeedbackRight = delay_sample_right * *mFeedbackParameter;
+        
+        mCircularBufferWriteHead++;
+        
+        buffer.setSample(0, i, buffer.getSample(0, i) * (1 - *mDryWetParameter) + delay_sample_left * *mDryWetParameter);
+        buffer.setSample(1, i, buffer.getSample(1, i) * (1 - *mDryWetParameter) + delay_sample_right *  *mDryWetParameter);
+        
+        if (mCircularBufferWriteHead >= mCircularBufferLength)
+        {
+            mCircularBufferWriteHead = 0;
+        }
+    }
+}
 {% endhighlight %}
 
 This was a simple assignment meant to introduce us to codex concepts, but what it really introduced me to how fun Python is. I'd used it plenty, but
