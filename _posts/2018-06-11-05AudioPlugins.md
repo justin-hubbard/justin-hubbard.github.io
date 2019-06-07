@@ -18,6 +18,13 @@ plugins, and will be helpful for projects to come in the future.
 ----
 Delay effects essentially take an audio input and loop a portion of it back, creating an echo-like sound.
 
+<div style="width: 100%; margin: auto auto 10% auto;">
+    <div class="ytcontainer">
+        <iframe class="ytframe" src="https://www.youtube.com/embed/avp0D5dOahk"
+         frameborder="0" allowfullscreen></iframe>
+    </div>
+</div>
+
 The core concept behind implementing this effect in software is the use of a circular buffer. Basically, the plugin takes audio input 
 
 {% highlight cpp %}
