@@ -60,8 +60,7 @@ void DelayAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& 
             mDelayReadHead += mCircularBufferLength;
         }
 {% endhighlight %}
- 
-<br />
+
 The above code begins the processing. First, a loop clears the existing buffer which removes a backlog of audio data that can linger when playback in ended and restarted, resulting in leftover audio that you don't want in your projects.
 
 Next, the main processing loop begins. This loop iterates over the number of samples in the input audio buffer. The first thing that happens is a smoothing value is determined so that audio doesn't experience artifactring when the delay time doesn't fit nicely within the sample rate. Then the internal circular buffer at the current writehead is set to the float value for the feedback audio added to the input audio. Finally, the the write location for the delay is determined and wrapped around the buffer if that calculated index goes beyond the length of the circular buffer. (The length is predetermined in code based on what a reasonable max delay time should be)
