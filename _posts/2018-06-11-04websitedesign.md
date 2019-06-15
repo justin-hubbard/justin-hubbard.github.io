@@ -21,7 +21,7 @@ As everyone agrees, dark themes are the best. I started by making everything gre
 
 You're likely asking yourself this question. Well I was asking myself the same question while eating from a pre-cut melon mix that I purchased in a single-use plastic containeer (boo) from Safeway. I looked beneath my face and noticed a gorgeous trio of colors. Watermelon. Cantaloupe. Honeydew. So pastel. So trendy.
 
-![Watermelon](/assets/images/watermelon.png) ![Cantaloupe](/assets/images/cantaloupe.png) ![Honeydew](/assets/images/honeydew.png)
+  ![Watermelon](/assets/images/watermelon.png) ![Cantaloupe](/assets/images/cantaloupe.png) ![Honeydew](/assets/images/honeydew.png)
 
 Unfortunately, the watermelon color is basically illegible on the dark gray background, so it was regelated to the text color for visited links. That seemed like a decent consolation. Meanwhile, cantaloupe and honeydew are thriving throughout the site. Making appearances in such exhaulted elements as the header bar, link text, and subheading text.
 
@@ -30,4 +30,6 @@ For some examples, either look at your screen right now, or at these images belo
 ![Post link](/assets/images/postlinks.png)
 ![Post example](/assets/images/postexample.png)
 
-Hopefully this gives an idea of interfaces I like looking at. Simple, yet edgy. Stunning, yet understated. Professional, yet playful. Inspired by fruit.
+Hopefully this gives an idea of interfaces I like looking at. Simple, yet edgy. 
+
+Stunning, yet understated. Professional, yet playful. Inspired by fruit.
