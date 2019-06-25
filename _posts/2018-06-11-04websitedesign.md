@@ -30,6 +30,7 @@ For some examples, either look at your screen right now, or at these images belo
 ![Post link](/assets/images/postlinks.png)
 ![Post example](/assets/images/postexample.png)
 
-Hopefully this gives an idea of interfaces I like looking at. Simple, yet edgy. 
+Hopefully this gives an idea of interfaces I like looking at. 
 
-Stunning, yet understated. Professional, yet playful. Inspired by fruit.
+Simple, yet edgy. Stunning, yet understated. Professional, yet playful.
+Inspired by fruit.
