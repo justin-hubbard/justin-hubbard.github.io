@@ -202,10 +202,18 @@ figcaption {
 }
 
 div.container {
-    width: 100%;
-    display: flex;
-    flex: 1.0;
-    //justify-content:space-between;
+  display: flex;
+  margin: 25px 0;
+}
+
+.container > div:not(:last-child) {
+  margin-right: 2%;
+}
+
+img.examples {
+  width: 100%;
+  height auto;
+  vertical-align: middle;
 }
 
 
