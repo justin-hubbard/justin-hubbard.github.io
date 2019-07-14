@@ -24,8 +24,7 @@ Delay effects essentially take an audio input and loop a portion of it back, cre
          frameborder="0" allowfullscreen></iframe>
     </div>
 </div>
-<br />
-
+ 
 The core concept behind implementing this effect in software is the use of a circular buffer. Basically, the functionality all runs through a function
 called processBlock() which provides the AudioBuffer and MidiBuffer for manipulation. This allows the function do iterate over all the samples currently inside the AudioBuffer to change it however you'd like.
 
@@ -105,4 +104,13 @@ In this last portion, the feedback values are calculated, then the delay is adde
 
 ## Chorus/Flanger
 ----
+
+Chorus and Flanger effects are variations on taking the original audio and adding a copy that has altered timing, pitch, and/or phase. This makes the signal sound bigger, airier, wider, more interesting. Flangers vary in timing very minimally, just enough to create a space between the signals, while a chorus is a much more drastic effect with the ability for longer delay times between the dry and wet signals.
+
+<div style="width: 100%; margin: auto auto auto auto;">
+    <div class="ytcontainer">
+        <iframe class="ytframe" src="https://www.youtube.com/embed/iTT6ywb1PUo"
+         frameborder="0" allowfullscreen></iframe>
+    </div>
+</div>
 
