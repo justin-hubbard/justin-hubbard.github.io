@@ -107,10 +107,59 @@ In this last portion, the feedback values are calculated, then the delay is adde
 
 Chorus and Flanger effects are variations on taking the original audio and adding a copy that has altered timing, pitch, and/or phase. This makes the signal sound bigger, airier, wider, more interesting. Flangers vary in timing very minimally, just enough to create a space between the signals, while a chorus is a much more drastic effect with the ability for longer delay times between the dry and wet signals.
 
+
+In the video below, I try to show the more extreme settings for this plugin to emphasize the effect:
+
 <div style="width: 100%; margin: auto auto auto auto;">
     <div class="ytcontainer">
         <iframe class="ytframe" src="https://www.youtube.com/embed/iTT6ywb1PUo"
          frameborder="0" allowfullscreen></iframe>
     </div>
 </div>
+
+{% highlight cpp %}
+    //LFO start
+    // Generate left LFO output
+    float lfoOutLeft = sin(2*M_PI * mLFOPhase);
+
+    // Calculate right channel LFO phase
+    float lfoPhaseRight = mLFOPhase + *mPhaseOffsetParameter;
+
+    if (lfoPhaseRight > 1) {
+        lfoPhaseRight -= 1;
+    }
+    // Generate right LFO output
+    float lfoOutRight = sin(2*M_PI * lfoPhaseRight);
+
+    // Move our LFO phase forward
+    mLFOPhase += *mRateParameter / getSampleRate();
+
+    if (mLFOPhase > 1)
+        mLFOPhase -= 1;
+
+    // Control the LFO depth by mult output by depth param
+    lfoOutLeft *= *mDepthParameter;
+    lfoOutRight *= *mDepthParameter;
+
+    float lfoOutMappedLeft;
+    float lfoOutMappedRight;
+
+    // Map LFO outputs to desired delay times (chorus/flanger)
+    //
+    // Chorus
+    if (*mTypeParameter == 0)
+    {
+        lfoOutMappedLeft = jmap(lfoOutLeft, -1.f, 1.f, 0.005f, 0.03f);
+        lfoOutMappedRight = jmap(lfoOutRight, -1.f, 1.f, 0.005f, 0.03f);
+    }
+    else
+    {
+        lfoOutMappedLeft = jmap(lfoOutLeft, -1.f, 1.f, 0.001f, 0.005f);
+        lfoOutMappedRight = jmap(lfoOutRight, -1.f, 1.f, 0.001f, 0.005f);
+    }
+
+    // Calculate delay lengths in samples
+    float delayTimeSamplesLeft = getSampleRate() * lfoOutMappedLeft;
+    float delayTimeSamplesRight = getSampleRate() * lfoOutMappedRight;
+{% endhighlight %}
 
