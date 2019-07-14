@@ -201,6 +201,10 @@ figcaption {
   font-size: $small-font-size;
 }
 
+div.container {
+    display: flex;
+    justify-content:space-between;
+}
 
 
 /**
