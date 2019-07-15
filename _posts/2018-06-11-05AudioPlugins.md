@@ -120,23 +120,28 @@ Like in the delay plugin above, all the magic for this one happens in the proces
 Here, an LFO is established for the left channel. To get the phase of the right channel's LFO, the phase of the left channel is added to the offset amount that the user has specified. Then the right LFO is started with that phase. The time value for both is incremented on every iteration of the loop to move it along.
 
 {% highlight cpp %}
-//LFO start
-// Generate left LFO output
-float lfoOutLeft = sin(2*M_PI * mLFOPhase);
+    // Control the LFO depth by mult output by depth param
+    lfoOutLeft *= *mDepthParameter;
+    lfoOutRight *= *mDepthParameter;
 
-// Calculate right channel LFO phase
-float lfoPhaseRight = mLFOPhase + *mPhaseOffsetParameter;
+    float lfoOutMappedLeft;
+    float lfoOutMappedRight;
 
-if (lfoPhaseRight > 1) {
-    lfoPhaseRight -= 1;
-}
-// Generate right LFO output
-float lfoOutRight = sin(2*M_PI * lfoPhaseRight);
+    // Map LFO outputs to desired delay times (chorus/flanger)
+    //
+    // Chorus
+    if (*mTypeParameter == 0)
+    {
+        lfoOutMappedLeft = jmap(lfoOutLeft, -1.f, 1.f, 0.005f, 0.03f);
+        lfoOutMappedRight = jmap(lfoOutRight, -1.f, 1.f, 0.005f, 0.03f);
+    }
+    else
+    {
+        lfoOutMappedLeft = jmap(lfoOutLeft, -1.f, 1.f, 0.001f, 0.005f);
+        lfoOutMappedRight = jmap(lfoOutRight, -1.f, 1.f, 0.001f, 0.005f);
+    }
 
-// Move our LFO phase forward
-mLFOPhase += *mRateParameter / getSampleRate();
-
-if (mLFOPhase > 1)
-    mLFOPhase -= 1;
-{% end highlight %}
-
+    // Calculate delay lengths in samples
+    float delayTimeSamplesLeft = getSampleRate() * lfoOutMappedLeft;
+    float delayTimeSamplesRight = getSampleRate() * lfoOutMappedRight;
+{% endhighlight %}
