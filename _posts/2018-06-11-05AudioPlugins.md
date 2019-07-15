@@ -65,36 +65,34 @@ The above code begins the processing. First, a loop clears the existing buffer w
 Next, the main processing loop begins. This loop iterates over the number of samples in the input audio buffer. The first thing that happens is a smoothing value is determined so that audio doesn't experience artifactring when the delay time doesn't fit nicely within the sample rate. Then the internal circular buffer at the current writehead is set to the float value for the feedback audio added to the input audio. Finally, the the write location for the delay is determined and wrapped around the buffer if that calculated index goes beyond the length of the circular buffer. (The length is predetermined in code based on what a reasonable max delay time should be)
 
 {% highlight cpp %}
-        int readHead_x = (int)mDelayReadHead;
-        int readHead_x1 = readHead_x + 1;
-        float readHeadFloat = mDelayReadHead - readHead_x;
-        
-        if (readHead_x1 >= mCircularBufferLength)
-        {
-            readHead_x1 -= mCircularBufferLength;
-        }
-        
-        float delay_sample_left = lin_interp(mCircularBufferLeft[readHead_x], mCircularBufferLeft[readHead_x1], readHeadFloat);
-        float delay_sample_right = lin_interp(mCircularBufferRight[readHead_x], mCircularBufferRight[readHead_x1], readHeadFloat);
+int readHead_x = (int)mDelayReadHead;
+int readHead_x1 = readHead_x + 1;
+float readHeadFloat = mDelayReadHead - readHead_x;
+
+if (readHead_x1 >= mCircularBufferLength)
+{
+    readHead_x1 -= mCircularBufferLength;
+}
+
+float delay_sample_left = lin_interp(mCircularBufferLeft[readHead_x], mCircularBufferLeft[readHead_x1], readHeadFloat);
+float delay_sample_right = lin_interp(mCircularBufferRight[readHead_x], mCircularBufferRight[readHead_x1], readHeadFloat);
 {% endhighlight %}
  
 
 This section performs interpolation between two points of audio. Sometimes, a delay time value will occur in between samples (because the same rate is an integer division of each second, generally 44.1 kHz) and so we use linear interpolation to determine what the adjacent values should be. This makes the output much smoother and less populated by artifacts.
 
 {% highlight cpp %}
-        mFeedbackLeft = delay_sample_left * *mFeedbackParameter;
-        mFeedbackRight = delay_sample_right * *mFeedbackParameter;
-        
-        mCircularBufferWriteHead++;
-        
-        buffer.setSample(0, i, buffer.getSample(0, i) * (1 - *mDryWetParameter) + delay_sample_left * *mDryWetParameter);
-        buffer.setSample(1, i, buffer.getSample(1, i) * (1 - *mDryWetParameter) + delay_sample_right *  *mDryWetParameter);
-        
-        if (mCircularBufferWriteHead >= mCircularBufferLength)
-        {
-            mCircularBufferWriteHead = 0;
-        }
-    }
+mFeedbackLeft = delay_sample_left * *mFeedbackParameter;
+mFeedbackRight = delay_sample_right * *mFeedbackParameter;
+
+mCircularBufferWriteHead++;
+
+buffer.setSample(0, i, buffer.getSample(0, i) * (1 - *mDryWetParameter) + delay_sample_left * *mDryWetParameter);
+buffer.setSample(1, i, buffer.getSample(1, i) * (1 - *mDryWetParameter) + delay_sample_right *  *mDryWetParameter);
+
+if (mCircularBufferWriteHead >= mCircularBufferLength)
+{
+    mCircularBufferWriteHead = 0;
 }
 {% endhighlight %}
  
