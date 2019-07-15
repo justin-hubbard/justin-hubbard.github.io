@@ -115,7 +115,7 @@ In the video below, I try to show the more extreme settings for this plugin to e
         <iframe class="ytframe" src="https://www.youtube.com/embed/iTT6ywb1PUo"
          frameborder="0" allowfullscreen></iframe>
     </div>
-</div><br>
+</div>
 
 Like in the delay plugin above, all the magic for this one happens in the processBlock() function. A lot of the same core concepts apply since these are similar effects, but this one relies on low frequency modulation, or LFO. This uses a sine function to alter the input and to create effects from the difference in phases between two channels.
 
