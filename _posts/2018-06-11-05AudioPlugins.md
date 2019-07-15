@@ -119,6 +119,12 @@ Like in the delay plugin above, all the magic for this one happens in the proces
 
 Here, an LFO is established for the left channel. To get the phase of the right channel's LFO, the phase of the left channel is added to the offset amount that the user has specified. Then the right LFO is started with that phase. The time value for both is incremented on every iteration of the loop to move it along.
 
+
+
+Next, the LFOs have their amplitude multiplied by the depth parameter set by the user. This parameter at its most extreme makes the sound super whacky.
+
+Next, the distinction is made between chorus and flanger effects. The user selects which effect they want in a dropdown, which directs the control in the if statement. The difference is that the delay for choruses can vary between 0.005 and 0.03 seconds, whereas the flanger spans 0.001 to 0.005 seconds. The chorus effect represents the typical variance in timing across a full choir of people singing, while the flanger is a more subtle, electronic warble effect.
+
 {% highlight cpp %}
     // Control the LFO depth by mult output by depth param
     lfoOutLeft *= *mDepthParameter;
@@ -145,3 +151,9 @@ Here, an LFO is established for the left channel. To get the phase of the right 
     float delayTimeSamplesLeft = getSampleRate() * lfoOutMappedLeft;
     float delayTimeSamplesRight = getSampleRate() * lfoOutMappedRight;
 {% endhighlight %}
+
+The mapping functions here take the raw LFO value within the range of -1 to 1 at that time and map it to the appropriate range for the selected effect. In the chorus, the range is mapped to be between 0.005 and 0.03. Then that value is converted to samples by multiplying it by the sample rate (usually 44.1khz). From there, the rest of the function works the exact same as the delay in how it sends the output to be played as audio.
+
+----
+
+Working on these audio plugins was the most fun I've ever had developing software. I spend a large amount of my time interacting with plugins while making my own music, so getting a look under the hood of how these plugins work was fascinating. Not only do I now have a greater understanding of how DSP works, but it has helped me to understand what the plugins I use are doing and what effect different parameters really have at a low level. Whether I can get paid to do this kind of work or it just becomes a new component of my hobby, I'll for sure be studying and creating new software like this as long as I am a developer.
