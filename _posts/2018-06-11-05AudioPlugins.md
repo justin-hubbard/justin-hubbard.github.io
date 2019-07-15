@@ -121,7 +121,7 @@ Like in the delay plugin above, all the magic for this one happens in the proces
 
 Here, an LFO is established for the left channel. To get the phase of the right channel's LFO, the phase of the left channel is added to the offset amount that the user has specified. Then the right LFO is started with that phase. The time value for both is incremented on every iteration of the loop to move it along.
 
-{% highlight cpp %}
+{% highlight c++ %}
     //LFO start
     // Generate left LFO output
     float lfoOutLeft = sin(2*M_PI * mLFOPhase);
@@ -146,7 +146,7 @@ Next, the LFOs have their amplitude multiplied by the depth parameter set by the
 
 Next, the distinction is made between chorus and flanger effects. The user selects which effect they want in a dropdown, which directs the control in the if statement. The difference is that the delay for choruses can vary between 0.005 and 0.03 seconds, whereas the flanger spans 0.001 to 0.005 seconds. The chorus effect represents the typical variance in timing across a full choir of people singing, while the flanger is a more subtle, electronic warble effect.
 
-{% highlight cpp %}
+{% highlight c++ %}
     // Control the LFO depth by mult output by depth param
     lfoOutLeft *= *mDepthParameter;
     lfoOutRight *= *mDepthParameter;
