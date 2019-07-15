@@ -121,6 +121,24 @@ Like in the delay plugin above, all the magic for this one happens in the proces
 
 Here, an LFO is established for the left channel. To get the phase of the right channel's LFO, the phase of the left channel is added to the offset amount that the user has specified. Then the right LFO is started with that phase. The time value for both is incremented on every iteration of the loop to move it along.
 
+{% highlight cpp %}
+    //LFO start
+    // Generate left LFO output
+    float lfoOutLeft = sin(2*M_PI * mLFOPhase);
 
+    // Calculate right channel LFO phase
+    float lfoPhaseRight = mLFOPhase + *mPhaseOffsetParameter;
 
+    if (lfoPhaseRight > 1) {
+        lfoPhaseRight -= 1;
+    }
+    // Generate right LFO output
+    float lfoOutRight = sin(2*M_PI * lfoPhaseRight);
+
+    // Move our LFO phase forward
+    mLFOPhase += *mRateParameter / getSampleRate();
+
+    if (mLFOPhase > 1)
+        mLFOPhase -= 1;
+{% end highlight %}
 
