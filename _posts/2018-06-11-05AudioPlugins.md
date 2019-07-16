@@ -173,3 +173,6 @@ The mapping functions here take the raw LFO value within the range of -1 to 1 at
 ----
 
 Working on these audio plugins was the most fun I've ever had developing software. I spend a large amount of my time interacting with plugins while making my own music, so getting a look under the hood of how these plugins work was fascinating. Not only do I now have a greater understanding of how DSP works, but it has helped me to understand what the plugins I use are doing and what effect different parameters really have at a low level. Whether I can get paid to do this kind of work or it just becomes a new component of my hobby, I'll for sure be studying and creating new software like this as long as I am a developer.
+
+[Delay Repo](https://github.com/justin-hubbard/PersonalProjects/tree/master/Delay)
+[Chorus/Flanger Repo](https://github.com/justin-hubbard/PersonalProjects/tree/master/KadenzeChorusFlanger)
