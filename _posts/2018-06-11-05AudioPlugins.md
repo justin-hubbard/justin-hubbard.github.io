@@ -23,8 +23,7 @@ Delay effects essentially take an audio input and loop a portion of it back, cre
         <iframe class="ytframe" src="https://www.youtube.com/embed/avp0D5dOahk"
          frameborder="0" allowfullscreen></iframe>
     </div>
-</div>
- 
+</div><br>
 The core concept behind implementing this effect in software is the use of a circular buffer. Basically, the functionality all runs through a function
 called processBlock() which provides the AudioBuffer and MidiBuffer for manipulation. This allows the function do iterate over all the samples currently inside the AudioBuffer to change it however you'd like.
 
@@ -107,13 +106,12 @@ Chorus and Flanger effects are variations on taking the original audio and addin
 
 
 In the video below, I try to show the more extreme settings for this plugin to emphasize the effect:
-
 <div style="width: 100%; margin: auto auto auto auto;">
     <div class="ytcontainer">
         <iframe class="ytframe" src="https://www.youtube.com/embed/iTT6ywb1PUo"
          frameborder="0" allowfullscreen></iframe>
     </div>
-</div>
+</div><br>
 
 Like in the delay plugin above, all the magic for this one happens in the processBlock() function. A lot of the same core concepts apply since these are similar effects, but this one relies on low frequency modulation, or LFO. This uses a sine function to alter the input and to create effects from the difference in phases between two channels.
 
