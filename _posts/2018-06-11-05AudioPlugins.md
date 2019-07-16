@@ -119,6 +119,7 @@ Like in the delay plugin above, all the magic for this one happens in the proces
 
 Here, an LFO is established for the left channel. To get the phase of the right channel's LFO, the phase of the left channel is added to the offset amount that the user has specified. Then the right LFO is started with that phase. The time value for both is incremented on every iteration of the loop to move it along.
 
+{% highlight cpp %}
     // Generate left LFO output
     float lfoOutLeft = sin(2*M_PI * mLFOPhase);
 
@@ -136,6 +137,7 @@ Here, an LFO is established for the left channel. To get the phase of the right 
 
     if (mLFOPhase > 1)
         mLFOPhase -= 1;
+{% endhighlight %}
 
 Next, the LFOs have their amplitude multiplied by the depth parameter set by the user. This parameter at its most extreme makes the sound super whacky.
 
